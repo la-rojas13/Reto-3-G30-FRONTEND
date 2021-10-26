@@ -7,7 +7,7 @@ function traerInformacion() {
     showSpinner()
     $.ajax({
         type: "GET",
-        url: "http://129.151.119.110:8080/api/Message/all",
+        url: "http://localhost:8080/api/Message/all",
         dataType: "JSON",
         success: function (response) {
             console.log(response)
@@ -26,7 +26,8 @@ function listarRespuesta(items) {
               <tr>
                 <th>MESSAGE</th>
                 <th>COMPUTER</th> 
-                <th>CLIENT</th>             
+                <th>CLIENT</th> '
+                <th colspan="2">Acciones</th>            
                 </tr>
               </thead>
               `;
@@ -36,7 +37,8 @@ function listarRespuesta(items) {
                              <td>${items[i].messageText}</td>
                              <td>${items[i].computer.name}</td>
                              <td>${items[i].client.name}</td>
-
+                             <td><button class="btn btn-primary" onclick="editarRegistro(${items[i].idMessage})">Editar</td>
+                             <td><button class="btn btn-danger" onclick="borrarConfirmacion(${items[i].idMessage})">Borrar</td>      
                 </tr>
         `;
     }
@@ -60,7 +62,7 @@ function agregar() {
     let datosPeticion = JSON.stringify(datos);
 
     $.ajax({
-        url: "http://129.151.119.110:8080/api/Message/save",
+        url: "http://localhost:8080/api/Message/save",
         data: datosPeticion,
         type: 'POST',
         contentType: "application/JSON",
@@ -81,6 +83,125 @@ function agregar() {
 
 }
 
+// Borrar elemento
+
+// modal confirmacion
+function borrarConfirmacion(id) {
+    swal({
+        title: "Esta seguro?",
+        text: "Los datos no podran ser recuperados",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    })
+        .then((willDelete) => {
+            if (willDelete) {
+                borrar(id)
+                swal("El elemento fue eliminado", {
+                    icon: "success",
+                });
+            } else {
+                swal("El elemento no se borrara");
+            }
+        });
+}
+
+
+
+function borrar(numId) {
+    var datos = {
+        id: numId
+    }
+
+    let datosPeticion = JSON.stringify(datos);
+
+    $.ajax({
+        url: "http://localhost:8080/api/Message/" + numId,
+        data: datosPeticion,
+        type: 'DELETE',
+        contentType: "application/JSON",
+
+        success: function (respuesta) {
+            console.log("Borrado");
+            traerInformacion();
+        },
+
+        error: function (xhr, status) {
+            console.log(status);
+            swal("El elemento no puede ser eliminado, ya que tiene elementos asociados", {
+                icon: "warning",
+            });
+        }
+    });
+
+}
+// Editar
+
+function editarRegistro(numId) {
+    console.log(numId)
+    $("#btn-actualizar").show();
+    $("#btn-agregar").hide();
+    $("#btn-listar").hide();
+    $("#message").focus();
+    $("#computer").prop('disabled', true);
+    var datos = {
+        id: numId
+    }
+
+    $.ajax({
+        url: "http://localhost:8080/api/Message/" + numId,
+        type: 'GET',
+        dataType: 'json',
+
+        success: function (respuesta) {
+            let items = respuesta;
+            console.log(items.client.name)
+             $("#id").val(items.idMessage),
+            $("#message").val(items.messageText),
+            $("#client").val(items.client.idClient),
+            $("#computer").val(items.computer.id)
+        },
+        error: function (xhr, status) {
+            console.log(status);
+        }
+    });
+
+}
+
+function actualizar() {
+    var datos = {
+        idMessage: $("#id").val(),
+        messageText: $("#message").val(),
+        client: { idClient: $("#client").val() },
+        computer: {id: $("#computer").val()}
+    }
+console.log($("#client").val())
+    let datosPeticion = JSON.stringify(datos);
+    console.log("datos actualizar:" + datosPeticion)
+
+    $.ajax({
+        url: "http://localhost:8080/api/Message/update",
+        data: datosPeticion,
+        type: 'PUT',
+        contentType: "application/JSON",
+
+        success: function (respuesta) {
+            console.log("Actualizado");
+            traerInformacion();
+            swal("Operación exitosa", "Elemento actualizado", "success");
+            limpiarCampos();
+            $("#btn-actualizar").hide();
+            $("#btn-agregar").show();
+            $("#btn-listar").show();
+            $("#computer").prop('disabled', false);
+        },
+
+        error: function (xhr, status) {
+            console.log(status);
+            swal("Error", "No se pudo actualizar el elemento", "error");
+        }
+    });
+}
 
 // Function to hide the Spinner
 function hideSpinner() {

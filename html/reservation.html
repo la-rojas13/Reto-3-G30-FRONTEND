@@ -44,13 +44,13 @@
       </div>
     </div>
   </nav>
-  <main id="main-content">
+  <main id="main-content ">
     <h3>Creacion de reservas</h3>
     <div class="form-container">
-      <!-- <div class="form-floating input-group-sm">
+      <div class="form-floating input-group-sm d-none">
         <input class="id-input form-control" type="number" id="id" placeholder="id">
         <label for="id">ID</label>
-      </div> -->
+      </div>
       <div class="form-floating">
         <input class="input-form form-control" type="text" id="startDate" placeholder="startDate">
         <label for="startDate">Start date</label>
@@ -66,6 +66,15 @@
       <div class="form-floating">
         <input class="input-form form-control" type="number" id="computer" placeholder="computer">
         <label for="computer">Computer</label>
+      </div>
+      <div id="status-container" class="form-floating">
+        <select class="form-select" id="status" aria-label="status">
+          <option value="created">Created</option>
+          <option value="programado">Programado</option>
+          <option value="cancelado">Cancelado</option>
+          <option value="realizado">Realizado</option>
+        </select>
+        <label for="status">Status</label>
       </div>
       <button id="btn-agregar" class="btn btn-primary" onclick="agregar()">Agregar</button>
       <button id="btn-listar" class="btn btn-secondary" onclick="traerInformacion()">Listar</button>
@@ -89,3 +98,5 @@
 </body>
 
 </html>
+
+

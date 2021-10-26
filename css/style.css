@@ -14,7 +14,9 @@ body{
 #navbarSupportedContent{
     margin-left: 45%;
 }
-
+#status-container{
+    display: none;
+}
 #spinner{
     margin: auto;
     margin-top: 5%;
@@ -72,4 +74,7 @@ h3{
     width: 50%;
     margin: auto;
     margin-top: 3rem;
+}
+.swal-modal .swal-text {
+    text-align: center;
 }
